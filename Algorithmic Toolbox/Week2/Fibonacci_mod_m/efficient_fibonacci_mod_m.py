@@ -10,11 +10,13 @@ def efficient_fibonacci_mod_m(n: int, m: int) -> int:
         # Exploit periodicity of Fn mod m to efficiently obtain an answer.
         Fn = [0,1,0] # Create an array initialised with first 2 elements of Fn.
         i = 2
-        while (i != (n+1)) and ((temp := (Fn[(i-1)%3] + Fn[(i-2)%3])%m) != 0):
+        Fn[i%3] = (Fn[(i-1)%3] + Fn[(i-2)%3])%m
+        while (i != (n+1)) and (Fn[i%3] != 0):
             # Calculate Fn mod m until either a) we reach Fn or b) we find
             # the restricted period of Fn mod m.
-            Fn[i%3] = temp # Temp used as walrus operator does not allow subscript assignment.
             i += 1
+            Fn[i%3] = (Fn[(i-1)%3] + Fn[(i-2)%3])%m
+            
 
         if (i == (n+1)):
             # If a) from above is met.
@@ -22,7 +24,6 @@ def efficient_fibonacci_mod_m(n: int, m: int) -> int:
 
         else:
             # If b) from above is met.
-            Fn[i%3] = temp
             restricted_period = i # Index of first Fibonacci element divisible by m.
             i += 1
             multiplier = Fn[i%3] = (Fn[(i-1)%3] + Fn[(i-2)%3])%m # The first residue after the restricted period is the multiplier.
